@@ -15,6 +15,8 @@ class WASDInputHandler;
  * Renders game state to terminal/console
  */
 class TerminalRenderer {
+	bool firstRender_ = true;
+
 public:
 	/**
 	 * Constructor for the TerminalRenderer class
@@ -25,6 +27,11 @@ public:
 	 * Destructor for the TerminalRenderer class
 	 */
 	~TerminalRenderer() = default;
+
+	/**
+	 * Resets the renderer state (for game restart)
+	 */
+	void reset();
 
 	/**
 	 * Clears the terminal screen

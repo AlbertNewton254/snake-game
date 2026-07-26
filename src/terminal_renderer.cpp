@@ -8,12 +8,25 @@
 #include <iostream>
 #include <cstdlib>
 #include <iomanip>
+#include <sstream>
+
+/**
+ * Resets the renderer state (for game restart)
+ */
+void TerminalRenderer::reset() {
+	firstRender_ = true;
+}
 
 /**
  * Clears the terminal screen
  */
 void TerminalRenderer::clear() {
-	std::cout << "\033[2J\033[H";;
+	if (firstRender_) {
+		std::cout << "\033[2J\033[H";
+		firstRender_ = false;
+	} else {
+		std::cout << "\033[H";
+	}
 }
 
 /**
@@ -26,41 +39,38 @@ void TerminalRenderer::render(const GameState& state) {
 	const auto& grid = state.getOccupied();
 	int rows = state.getRows();
 	int cols = state.getCols();
+	int foodX = state.getFood().getX();
+	int foodY = state.getFood().getY();
 
-	// Top border
+	std::ostringstream buf;
+
 	for (int x = 0; x < cols + 2; ++x) {
-		std::cout << "#";
+		buf << '#';
 	}
-	std::cout << "\n";
+	buf << '\n';
 
-	// Game grid - row by row (y is row, x is column)
 	for (int y = 0; y < rows; ++y) {
-		std::cout << "#";  // Left border
+		buf << '#';
 		for (int x = 0; x < cols; ++x) {
-			if (grid[y][x]) {
-				// Check if this is the food position
-				if (x == state.getFood().getX() && y == state.getFood().getY()) {
-					std::cout << "*";
-				} else {
-					std::cout << "O";
-				}
+			if (grid[y * cols + x]) {
+				buf << (x == foodX && y == foodY ? '*' : 'O');
 			} else {
-				std::cout << " ";
+				buf << ' ';
 			}
 		}
-		std::cout << "#\n";  // Right border
+		buf << "#\n";
 	}
 
-	// Bottom border
 	for (int x = 0; x < cols + 2; ++x) {
-		std::cout << "#";
+		buf << '#';
 	}
-	std::cout << "\n";
+	buf << '\n';
 
-	// Info
-	std::cout << "Score: " << state.getScore() << "\n";
-	std::cout << "Best: " << state.getBestScore() << "\n";
-	std::cout << "Controls: WASD to move, Q to quit\n";
+	buf << "Score: " << state.getScore() << '\n';
+	buf << "Best: " << state.getBestScore() << '\n';
+	buf << "Controls: WASD to move, Q to quit\n";
+
+	std::cout << buf.str();
 }
 
 /**
@@ -77,17 +87,19 @@ void TerminalRenderer::render(const GameState& state) {
  */
 bool TerminalRenderer::showGameOver(int finalScore, int bestScore, size_t totalGames,
                                    double averageScore, WASDInputHandler& inputHandler) {
-	std::cout << "\n";
-	std::cout << "==============================\n";
-	std::cout << "         GAME OVER!           \n";
-	std::cout << "                              \n";
-	std::cout << "  Final Score:  " << std::setw(5) << finalScore << "\n";
-	std::cout << "  Best Score:   " << std::setw(5) << bestScore << "\n";
-	std::cout << "  Games Played: " << std::setw(5) << totalGames << "\n";
-	std::cout << "  Average Score:" << std::setw(6) << std::fixed << std::setprecision(1) << averageScore << "\n";
-	std::cout << "                              \n";
-	std::cout << "  [R] Restart  [Q] Quit       \n";
-	std::cout << "==============================\n";
+	std::ostringstream buf;
+	buf << "\n";
+	buf << "==============================\n";
+	buf << "         GAME OVER!           \n";
+	buf << "                              \n";
+	buf << "  Final Score:  " << std::setw(5) << finalScore << "\n";
+	buf << "  Best Score:   " << std::setw(5) << bestScore << "\n";
+	buf << "  Games Played: " << std::setw(5) << totalGames << "\n";
+	buf << "  Average Score:" << std::setw(6) << std::fixed << std::setprecision(1) << averageScore << "\n";
+	buf << "                              \n";
+	buf << "  [R] Restart  [Q] Quit       \n";
+	buf << "==============================\n";
+	std::cout << buf.str();
 
 	while (true) {
 		char choice = inputHandler.readCharBlocking();

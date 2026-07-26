@@ -22,7 +22,7 @@ A terminal-based implementation of the classic Snake game in C++ with persistent
 
 - **Classic Snake Gameplay** - Control a snake to eat food and grow
 - **Score Persistence** - Best score and game history are saved between sessions
-- **Terminal-Based Rendering** - Clean, real-time display using ANSI escape codes
+- **Terminal-Based Rendering** - Clean, real-time display using ANSI escape codes with string-buffered output for minimal flicker
 - **Cross-Platform Support** - Works on Linux, macOS, and Windows
 - **Pre-built Binaries** - Download ready-to-run executables for all platforms
 - **Docker Support** - Containerized deployment with persistent data volumes
@@ -40,6 +40,8 @@ Pre-built binaries are available for download from the [Releases](https://github
 | Windows | x86-64 | `snake-windows-x86_64.exe` |
 | Windows | ARM64 | `snake-windows-arm64.exe` |
 | macOS | Universal (x86_64 + ARM64) | `snake-macos-universal` |
+
+> **Latest release:** [v1.1.0](https://github.com/miguelmochizuki/snake-game/releases/tag/v1.1.0) — Flattened occupancy bitmask for reduced memory usage; string-buffered terminal output for smoother rendering.
 
 ### Running Downloaded Binaries
 
@@ -296,11 +298,18 @@ Because `docker-publish` runs in parallel with `build`, the Docker image is buil
 
 ### Creating a New Release
 ```bash
-git tag -a v1.0.0 -m "Release v1.0.0"
-git push origin v1.0.0
+git tag -a v1.1.0 -m "Release v1.1.0"
+git push origin v1.1.0
 ```
 
 The release and Docker image will be created automatically.
+
+### Version History
+
+| Version | Highlights |
+|---------|------------|
+| [v1.1.0](https://github.com/miguelmochizuki/snake-game/releases/tag/v1.1.0) | Flattened occupancy bitmask (reduced memory); string-buffered terminal output (smoother rendering) |
+| [v1.0.0](https://github.com/miguelmochizuki/snake-game/releases/tag/v1.0.0) | Initial release: cross-platform builds, Docker support, score persistence |
 
 ### Docker Hub
 A pre-built multi-platform image (linux/amd64, linux/arm64) is available at:

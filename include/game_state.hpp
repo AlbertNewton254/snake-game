@@ -18,7 +18,7 @@
  * int cols_: Number of columns in the board
  * Snake snake_: Snake entity
  * Food food_: Food entity
- * std::vector<std::vector<bool>> occupied_: Bitmask for O(1) occupancy checks
+ * std::vector<bool> occupied_: Flat bitmask for O(1) occupancy checks
  * int score_: Current score
  * int bestScore_: Current best score (loaded from file)
  */
@@ -28,7 +28,7 @@ private:
 	int cols_;
 	Snake snake_;
 	Food food_;
-	std::vector<std::vector<bool>> occupied_;
+	std::vector<bool> occupied_;
 	int score_;
 	int bestScore_;
 
@@ -77,9 +77,9 @@ public:
 	/**
 	 * Gets the occupancy grid (for rendering)
 	 *
-	 * Returns const std::vector<std::vector<bool>>&: Const reference to grid
+	 * Returns const std::vector<bool>&: Const reference to flat bitmask
 	 */
-	const std::vector<std::vector<bool>>& getOccupied() const;
+	const std::vector<bool>& getOccupied() const;
 
 	/**
 	 * Gets the number of rows in the board

@@ -22,7 +22,7 @@ GameState::GameState(int rows, int cols, int bestScore)
 	, cols_(cols)
 	, snake_(cols / 2, rows / 2, 3)
 	, food_(0, 0)
-	, occupied_(rows, std::vector<bool>(cols, false))
+	, occupied_(rows * cols, false)
 	, score_(0)
 	, bestScore_(bestScore) {
 	std::srand(static_cast<unsigned>(std::time(nullptr)));
@@ -62,7 +62,7 @@ const Food& GameState::getFood() const {
  *
  * Returns const std::vector<std::vector<bool>>&: Const reference to grid
  */
-const std::vector<std::vector<bool>>& GameState::getOccupied() const {
+const std::vector<bool>& GameState::getOccupied() const {
 	return occupied_;
 }
 
@@ -125,7 +125,7 @@ bool GameState::isOccupied(int x, int y) const {
 	if (x < 0 || x >= cols_ || y < 0 || y >= rows_) {
 		return true;
 	}
-	return occupied_[y][x];
+	return occupied_[y * cols_ + x];
 }
 
 /**
@@ -238,13 +238,11 @@ void GameState::spawnFood() {
  * Updates the occupancy bitmask based on current snake and food positions
  */
 void GameState::updateOccupied() {
-	for (auto& row : occupied_) {
-		std::fill(row.begin(), row.end(), false);
-	}
+	std::fill(occupied_.begin(), occupied_.end(), false);
 
 	for (const auto& segment : snake_.getSegments()) {
-		occupied_[segment.getY()][segment.getX()] = true;
+		occupied_[segment.getY() * cols_ + segment.getX()] = true;
 	}
 
-	occupied_[food_.getY()][food_.getX()] = true;
+	occupied_[food_.getY() * cols_ + food_.getX()] = true;
 }
